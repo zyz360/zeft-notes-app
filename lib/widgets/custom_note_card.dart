@@ -1,10 +1,13 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notess_app/Cubits/notes_cubit.dart';
+import 'package:notess_app/models/note_model.dart';
 import 'package:notess_app/widgets/edit_note_view.dart';
 
 class NoteCard extends StatelessWidget {
-  const NoteCard({super.key});
-
+  const NoteCard({super.key, required this.note});
+final NoteModel note;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -12,7 +15,9 @@ class NoteCard extends StatelessWidget {
       {
         Navigator.push(context, MaterialPageRoute(builder: (context)
         {
-          return EditNoteView();
+          return EditNoteView(
+            note: note,
+          );
         }
         ));
       },
@@ -25,7 +30,7 @@ class NoteCard extends StatelessWidget {
       
       
         decoration: BoxDecoration(
-          color: Color(0xffFFCC80),
+          color: Color(note.color),
           borderRadius: BorderRadius.circular(16),
         ),
       
@@ -35,8 +40,8 @@ class NoteCard extends StatelessWidget {
           //why the above line only move-ed the date text widget only? to the end?
           children: [
             ListTile(
-              title: const Text(
-                "flutter tips",
+              title:  Text(
+                note.title,
                 style: TextStyle(
                     color: Colors.black
                 ),
@@ -46,7 +51,7 @@ class NoteCard extends StatelessWidget {
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 16),
                 child: Text(
-                  'Sample text for test',
+                 note.Subtitle,
                   style: TextStyle(
                     color: Colors.black.withOpacity(.4),
                     fontSize: 18,
@@ -56,7 +61,10 @@ class NoteCard extends StatelessWidget {
       
       
               trailing: IconButton(
-                onPressed: (){},
+                onPressed: (){
+                  note.delete();
+                  BlocProvider.of<NotesCubit>(context).fetchAllNotes();
+                },
                 icon: Icon(Icons.delete,
                   color: Colors.black,
                   size: 30 ,
@@ -66,7 +74,7 @@ class NoteCard extends StatelessWidget {
       
             Padding(
               padding: const EdgeInsets.only(right: 16),
-              child: Text('13 september / 2024',
+              child: Text(note.Date,
                 style: TextStyle(
                   color: Colors.black.withOpacity(.4),
                   fontSize: 12,
